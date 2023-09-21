@@ -4,6 +4,7 @@ import com.menchaca.inventory.exception.ObjectPropertyRepeatedException;
 import com.menchaca.inventory.exception.ObjectNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -70,6 +71,17 @@ public class ApiExceptionHandler extends Throwable {
         errorMap.put("time", LocalDateTime.now().toString());
         errorMap.put("url", request.getServletPath());
         errorMap.put("error", "Bad Request");
+        errorMap.put("msg", ex.getMessage());
+    return errorMap;
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, Object> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request){
+        Map<String, Object> errorMap = new LinkedHashMap<>();
+        errorMap.put("status", HttpStatus.BAD_REQUEST.value());
+        errorMap.put("time", LocalDateTime.now().toString());
+        errorMap.put("url", request.getServletPath());
+        errorMap.put("error", "Unauthorized Request");
         errorMap.put("msg", ex.getMessage());
     return errorMap;
     }

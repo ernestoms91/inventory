@@ -12,14 +12,15 @@ import com.menchaca.inventory.persistence.IBusinessOfficeDAO;
 import com.menchaca.inventory.persistence.IItemDAO;
 import com.menchaca.inventory.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class IItemServiceImpl implements IItemService {
+public class ItemServiceImpl implements IItemService {
 
     @Autowired
     private IItemDAO itemDAO;
@@ -49,19 +50,15 @@ public class IItemServiceImpl implements IItemService {
     }
 
     @Override
-    public List<ItemDTO> findAll() {
-        List<ItemDTO> itemDTOList = null;
+    public Page<Item> findAll(Pageable pageable) {
+        Page<Item> itemPage = null;
         try {
-            itemDTOList = itemDAO.findAll()
-                    .stream()
-                    .map(item -> {
-                        return itemMapper.ItemToItemDTO(item);
-                    }).toList();
+            itemPage = itemDAO.findAll(pageable);
         } catch (Exception e) {
             throw e;
         }
 
-        return itemDTOList;
+        return itemPage;
     }
 
     @Override
@@ -82,7 +79,7 @@ public class IItemServiceImpl implements IItemService {
                 throw new ObjectNotFoundException("No existe ningun departamento con el id: " + itemDTO.getId_department());
             }
 
-            item = itemMapper.itemDTOToItem(itemDTO);
+            item = itemMapper.ItemDTOToItem(itemDTO);
 
             itemDAO.save(item);
         } catch (Exception e) {

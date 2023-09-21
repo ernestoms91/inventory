@@ -4,6 +4,8 @@ import com.menchaca.inventory.exception.ObjectNotFoundException;
 import com.menchaca.inventory.model.Item;
 import com.menchaca.inventory.model.dto.ItemDTO;
 import com.menchaca.inventory.model.dto.UpdateItemDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +13,7 @@ import java.util.Optional;
 public interface IItemService {
 
     ItemDTO findById(Long id) throws ObjectNotFoundException;
-    List<ItemDTO> findAll();
+    Page<Item> findAll(Pageable pageable);
     Item save (ItemDTO itemDTO);
 
     Item update (Long id, UpdateItemDTO updateItemDTO);

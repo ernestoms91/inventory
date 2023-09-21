@@ -4,6 +4,8 @@ import com.menchaca.inventory.model.Item;
 import com.menchaca.inventory.persistence.IItemDAO;
 import com.menchaca.inventory.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,9 +21,15 @@ public class ItemDAOImp implements IItemDAO {
     }
 
     @Override
-    public List<Item> findAll() {
-        return (List<Item>) itemRepository.findAll();
+    public Page<Item> findAll(Pageable pageable) {
+        return itemRepository.findAll(pageable);
     }
+
+
+//    @Override
+//    public List<Item> findAll() {
+//        return (List<Item>) itemRepository.findAll();
+//    }
 
     @Override
     public Optional<Item> findByStockNumber(int stockNumber) {

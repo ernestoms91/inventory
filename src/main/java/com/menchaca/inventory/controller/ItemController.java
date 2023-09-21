@@ -12,8 +12,11 @@ import com.menchaca.inventory.service.IItemService;
 import com.menchaca.inventory.util.ResponseMessage;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -28,16 +31,17 @@ public class ItemController {
     private IItemService itemService;
 
     @GetMapping("/find/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> findById(@PathVariable Long id) throws ObjectNotFoundException {
         ItemDTO itemDTO = itemService.findById(id);
         return ResponseEntity.ok(itemDTO);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAll(Pageable pageable) {
 
-        List<ItemDTO> itemDTOList = itemService.findAll();
-        return ResponseEntity.ok(itemDTOList);
+        Page<Item>  itemPage = itemService.findAll(pageable);
+        return ResponseEntity.ok(itemPage);
     }
 
     @PostMapping("/new")
