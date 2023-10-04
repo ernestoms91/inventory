@@ -14,4 +14,4 @@ INSERT INTO items (stock_number, electric, type, description, price, id_departme
 INSERT INTO items (stock_number, electric, type, description, price, id_department, broken, withdrawn) VALUES (1520, true, 'PC', 'Una computadora de escritorio moderna', 15000.00, 1, false, false);
 
 
-
+INSERT INTO usuarios (name, last_name, username, email, password, role, enabled) VALUES ('Juan', 'Pérez', 'juan', 'juanperez@example.com', '$2y$10$5lMHWk/jPttQn8Jgzr.j9Ol1y3iy430QTHbK2ArVahMIxt7BVNBUO', 'USER', true);

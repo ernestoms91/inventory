@@ -12,6 +12,5 @@ import org.springframework.http.HttpStatusCode;
 public class HttpCreatedDTO<T> {
     private int status;
     private String msg;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T content;
 }

@@ -1,5 +1,6 @@
 package com.menchaca.inventory.service.impl;
 
+import com.menchaca.inventory.exception.InvalidFileTypeException;
 import com.menchaca.inventory.exception.ObjectNotFoundException;
 import com.menchaca.inventory.exception.ObjectPropertyRepeatedException;
 import com.menchaca.inventory.mapper.ItemMapper;
@@ -12,11 +13,18 @@ import com.menchaca.inventory.persistence.IBusinessOfficeDAO;
 import com.menchaca.inventory.persistence.IItemDAO;
 import com.menchaca.inventory.service.IItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -28,6 +36,12 @@ public class ItemServiceImpl implements IItemService {
     private IBusinessOfficeDAO businessOfficeDAO;
     @Autowired
     private ItemMapper itemMapper;
+    @Value("${images.folder.path}")
+    private String folderPath;
+    @Value("${image.base.url}")
+    private String imageApiUrl;
+
+//    private String folderPath ="C:\\Users\\Sunshine\\Desktop\\Spring projects\\Files\\";
 
     @Override
     public ItemDTO findById(Long id) throws ObjectNotFoundException {
@@ -133,7 +147,7 @@ public class ItemServiceImpl implements IItemService {
                 item.setObservation(updateItemDTO.getObservation());
             }
             if (updateItemDTO.getPrice() != null) {
-                item.setPrice(BigDecimal.valueOf(Long.parseLong(updateItemDTO.getPrice())));
+                item.setPrice(updateItemDTO.getPrice());
             }
             if (updateItemDTO.getBroken() != null && !updateItemDTO.getBroken().isEmpty() && !updateItemDTO.getBroken().isBlank()) {
                 item.setBroken(Boolean.parseBoolean(updateItemDTO.getBroken()));
@@ -176,4 +190,49 @@ public class ItemServiceImpl implements IItemService {
         }
         itemDAO.deleteById(id);
     }
+
+    @Override
+    public String uploadImage(Long id, MultipartFile file) throws ObjectNotFoundException, IOException, InvalidFileTypeException {
+
+        String[] validExtensions = {"jpg", "jpeg"};
+
+
+        Optional<Item> itemOptional = itemDAO.findById(id);
+        if (itemOptional.isEmpty()) {
+            throw new ObjectNotFoundException("No existe un objeto con id: " + id);
+        }
+
+        String[] split = file.getOriginalFilename().split("\\.");
+
+//        System.out.println(Arrays.toString(split));
+//        System.out.println(Arrays.asList(validExtensions).contains(split[split.length - 1]));
+
+        // Valida que la extensión del archivo sea JPG o JPEG
+        if (!Arrays.asList(validExtensions).contains(split[split.length - 1])) {
+            throw new InvalidFileTypeException("Tipo de archivo no válido");
+        }
+        Item item = itemOptional.get();
+        String filePath = folderPath + id + "." + split[split.length - 1];
+
+        file.transferTo(new File(filePath));
+
+        item.setImage(imageApiUrl + id + "." + split[split.length - 1]);
+        itemDAO.save(item);
+
+        return "Image uploaded successfully : ";
+    }
+
+    public byte[] downloadImageFromFileSystem(String fileName) throws ObjectNotFoundException, IOException {
+
+        File file = new File(folderPath + fileName);
+
+        if(!file.exists()){
+            throw new ObjectNotFoundException("Imagen no encontrada" );
+        }
+
+        byte[] images = Files.readAllBytes(file.toPath());
+        return images;
+    }
+
+
 }

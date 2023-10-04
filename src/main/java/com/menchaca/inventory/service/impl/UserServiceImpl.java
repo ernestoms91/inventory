@@ -3,10 +3,9 @@ package com.menchaca.inventory.service.impl;
 import com.menchaca.inventory.exception.ObjectNotFoundException;
 import com.menchaca.inventory.exception.ObjectPropertyRepeatedException;
 import com.menchaca.inventory.mapper.UserMapper;
+import com.menchaca.inventory.model.Role;
 import com.menchaca.inventory.model.User;
-import com.menchaca.inventory.model.dto.LoginDTO;
-import com.menchaca.inventory.model.dto.UpdateItemDTO;
-import com.menchaca.inventory.model.dto.UserDTO;
+import com.menchaca.inventory.model.dto.*;
 import com.menchaca.inventory.persistence.IUserDAO;
 import com.menchaca.inventory.repository.UserRepository;
 import com.menchaca.inventory.security.JwtService;
@@ -23,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,8 +43,8 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
-    public UserDTO findById(Long id) throws ObjectNotFoundException {
-        UserDTO userDTO = null;
+    public UserDetailDTO findById(Long id) throws ObjectNotFoundException {
+        UserDetailDTO userDetailDTO = null;
         try {
 
             Optional<User> itemOptional = userDAO.findById(id);
@@ -53,12 +53,12 @@ public class UserServiceImpl implements IUserService {
             }
 
             User user = itemOptional.get();
-            userDTO = userMapper.UserToUserDTO(user);
+            userDetailDTO = userMapper.UserToUserDetailDTO(user);
 
         } catch (Exception e) {
             throw e;
         }
-        return userDTO;
+        return userDetailDTO;
     }
 
     @Override
@@ -103,78 +103,73 @@ public class UserServiceImpl implements IUserService {
 
 
     @Override
-    public User update(Long id, UpdateItemDTO updateItemDTO) {
-        return null;
-//        Item item = null;
-//        try {
-//
-//            if (updateItemDTO.isEmpty()) {
-//                System.out.println("Esta vacia");
-//                throw new ObjectPropertyRepeatedException("Peticion vacía");
-//            }
-//
-//
-//            Optional<Item> itemOptional = itemDAO.findById(id);
-//            if (itemOptional.isEmpty()) {
-//                throw new ObjectNotFoundException("No existe un item con id: " + id);
-//            }
-//
-//            item = itemOptional.get();
-//
-//
-//            if (updateItemDTO.getStockNumber() != null && !updateItemDTO.getStockNumber().isEmpty() && !updateItemDTO.getStockNumber().isBlank()) {
-//                Optional<Item> itemOptional1 = itemDAO.findByStockNumber(Integer.parseInt(updateItemDTO.getStockNumber()));
-//
-//                if (itemOptional1.isPresent() && itemOptional1.get().getId() != id) {
-//                    throw new ObjectPropertyRepeatedException("Ya existe un objeto con este numero de inventario: " + updateItemDTO.getStockNumber());
-//                }
-//
-//                item.setStockNumber(Integer.parseInt(updateItemDTO.getStockNumber()));
-//            }
-//
-//
-//            if (updateItemDTO.getElectric() != null && !updateItemDTO.getElectric().isEmpty() && !updateItemDTO.getElectric().isBlank()) {
-//                item.setElectric(Boolean.parseBoolean(updateItemDTO.getElectric()));
-//            }
-//            if (updateItemDTO.getType() != null && !updateItemDTO.getType().isEmpty() && !updateItemDTO.getType().isBlank()) {
-//                item.setType(Type.valueOf(updateItemDTO.getType()));
-//            }
-//
-//            if (updateItemDTO.getDescription() != null && !updateItemDTO.getDescription().isEmpty() && !updateItemDTO.getDescription().isBlank()) {
-//                item.setDescription(updateItemDTO.getDescription());
-//            }
-//
-//            if (updateItemDTO.getObservation() != null && !updateItemDTO.getObservation().isEmpty() && !updateItemDTO.getObservation().isBlank()) {
-//                item.setObservation(updateItemDTO.getObservation());
-//            }
-//            if (updateItemDTO.getPrice() != null) {
-//                item.setPrice(BigDecimal.valueOf(Long.parseLong(updateItemDTO.getPrice())));
-//            }
-//            if (updateItemDTO.getBroken() != null && !updateItemDTO.getBroken().isEmpty() && !updateItemDTO.getBroken().isBlank()) {
-//                item.setBroken(Boolean.parseBoolean(updateItemDTO.getBroken()));
-//            }
-//            if (updateItemDTO.getWithdrawn() != null && !updateItemDTO.getWithdrawn().isEmpty() && !updateItemDTO.getWithdrawn().isBlank()) {
-//                item.setWithdrawn(Boolean.parseBoolean(updateItemDTO.getWithdrawn()));
-//            }
-//
-//            Optional<BusinessOffice> businessOfficeOptional = businessOfficeDAO.findById(Long.valueOf(updateItemDTO.getId_department()));
-//
-//            if (businessOfficeOptional.isEmpty()) {
-//                throw new ObjectNotFoundException("No existe ningun departamento con el id: " + updateItemDTO.getId_department());
-//            }
-//
-//            if (updateItemDTO.getId_department() != null && !updateItemDTO.getId_department().isEmpty() && !updateItemDTO.getId_department().isBlank()) {
-//                item.setBusinessOffice(BusinessOffice.builder()
-//                        .id(Long.valueOf(updateItemDTO.getId_department())).build());
-//            }
-//
-//            itemDAO.save(item);
-//
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return item;
+    public User update(Long id, UpdateUserDTO updateUserDTO) {
+
+        User user = null;
+        try {
+
+            if (updateUserDTO.isEmpty()) {
+                System.out.println("Esta vacia");
+                throw new ObjectPropertyRepeatedException("Peticion vacía");
+            }
+
+
+            Optional<User> userOptional = userDAO.findById(id);
+            if (userOptional.isEmpty()) {
+                throw new ObjectNotFoundException("No existe un usuario con id: " + id);
+            }
+
+            user = userOptional.get();
+
+
+            if (updateUserDTO.getUsername() != null && !updateUserDTO.getUsername().isEmpty() && !updateUserDTO.getUsername().isBlank()) {
+                Optional<User> userOptional1 = userDAO.findByUsername(updateUserDTO.getUsername());
+
+                if (userOptional1.isPresent() && userOptional1.get().getId() != id) {
+                    throw new ObjectPropertyRepeatedException("Ya existe un username llamado: " + updateUserDTO.getUsername());
+                }
+
+                user.setUsername(updateUserDTO.getUsername());
+            }
+
+            if (updateUserDTO.getEmail() != null && !updateUserDTO.getEmail().isEmpty() && !updateUserDTO.getEmail().isBlank()) {
+                Optional<User> userOptional2 = userDAO.findByEmail(updateUserDTO.getEmail());
+
+                if (userOptional2.isPresent() && userOptional2.get().getId() != id) {
+                    throw new ObjectPropertyRepeatedException("Este correo ya esta registrado");
+                }
+
+                user.setEmail(updateUserDTO.getEmail());
+            }
+
+            if (updateUserDTO.getName() != null && !updateUserDTO.getName().isEmpty() && !updateUserDTO.getName().isBlank()) {
+                user.setName(updateUserDTO.getName());
+            }
+
+            if (updateUserDTO.getLastName() != null && !updateUserDTO.getLastName().isEmpty() && !updateUserDTO.getLastName().isBlank()) {
+                user.setLastName(updateUserDTO.getLastName());
+            }
+
+            if (updateUserDTO.getPassword() != null && !updateUserDTO.getPassword().isEmpty() && !updateUserDTO.getPassword().isBlank()) {
+                user.setPassword(passwordEncoder.encode(updateUserDTO.getPassword()));
+            }
+
+            if (updateUserDTO.getRole() != null) {
+                user.setRole(Role.valueOf(updateUserDTO.getRole()));
+            }
+
+            if (updateUserDTO.getDisable() != null && !updateUserDTO.getDisable().isEmpty() && !updateUserDTO.getDisable().isBlank()) {
+                user.setEnabled(Boolean.parseBoolean(updateUserDTO.getDisable()));
+            }
+
+            userDAO.save(user);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return user;
     }
+
 
     @Override
     public void deleteById(Long id) {
@@ -188,7 +183,7 @@ public class UserServiceImpl implements IUserService {
             }
 
             user = userOptional.get();
-            user.setDisable(true);
+            user.setEnabled(false);
             userDAO.save(user);
 
         } catch (Exception e) {
@@ -210,38 +205,30 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Map<String, String> login(LoginDTO loginDTO) {
+    public Map<String, Object> login(LoginDTO loginDTO) {
 
-
-        Map<String, String> user1 = new HashMap<>();
+        Map<String, Object> user1 = new LinkedHashMap<>();
         try {
 
             Optional<User> userOptional = userDAO.findByUsername(loginDTO.getUsername());
-//            if (userOptional.isEmpty()) {
-//                throw new ObjectNotFoundException("Creedenciales incorrectas" );
-//            }
-
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginDTO.getUsername(),
                             loginDTO.getPassword()
                     )
             );
-//           if(!authentication.isAuthenticated()){
-//               throw new ObjectNotFoundException("Creedenciales incorrectas" );
-//           }
 
             User user = userOptional.get();
             String jwtToken = jwtService.generateToken(user);
-
-            user1.put("usuario", user.getUsername());
-//            user1.put("nombre", user.getName());
-//            user1.put("correo", user.getEmail());
-//            user1.put("rol", user.getRole().toString());
             user1.put("jwt", jwtToken);
+            user1.put("usuario", user.getUsername());
+            user1.put("apellidos", user.getLastName());
+            user1.put("nombre", user.getName());
+            user1.put("correo", user.getEmail());
+            user1.put("rol", user.getRole().toString());
 
-        } catch (AuthenticationException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw e;
         }
         return user1;
     }

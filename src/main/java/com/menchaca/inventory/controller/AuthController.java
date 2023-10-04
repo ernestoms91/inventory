@@ -1,5 +1,6 @@
 package com.menchaca.inventory.controller;
 
+import com.menchaca.inventory.model.Role;
 import com.menchaca.inventory.model.dto.HttpCreatedDTO;
 import com.menchaca.inventory.model.dto.LoginDTO;
 import com.menchaca.inventory.model.dto.UserDTO;
@@ -25,7 +26,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO) throws URISyntaxException {
-
+        userDTO.setRole(Role.valueOf("USER"));
         Map<String, String> user = userService.register(userDTO);
 
         return ResponseEntity.created(new URI("api/v1/department/new")).body(HttpCreatedDTO.builder()
@@ -35,13 +36,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody @Valid LoginDTO loginDTO) throws  URISyntaxException {
-        System.out.println("+++++++++++++++++++++++++++++++++++++");
-        Map<String, String> user = userService.login(loginDTO);
+    public ResponseEntity<?> loginUser(@RequestBody @Valid LoginDTO loginDTO) throws URISyntaxException {
+        Map<String, Object> user = userService.login(loginDTO);
 
-        return ResponseEntity.created(new URI("api/v1/department/new")).body(HttpCreatedDTO.builder()
-                .status(HttpStatus.CREATED.value())
-                .msg("Usuario regustrado existosamente")
+        return ResponseEntity.ok(HttpCreatedDTO.builder()
+                .status(HttpStatus.OK.value())
+                .msg("Usuario autenticado exitosamente")
                 .content(user).build());
     }
 

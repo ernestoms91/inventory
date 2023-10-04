@@ -28,7 +28,10 @@ public class SecurityConfig {
     @Autowired
     private AuthenticationProvider authenticationProvider;
 
-
+//    @Autowired
+//    private CustomBearerTokenAuthenticationEntryPoint customBearerTokenAuthenticationEntryPoint;
+//    @Autowired
+//    private CustomBearerTokenAccessDeniedHandler customBearerTokenAccessDeniedHandler;
 
 
     @Bean
@@ -38,8 +41,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(publicEndpoints()).permitAll().anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore( jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//                .exceptionHandling(ex -> ex
+//                        .authenticationEntryPoint(customBearerTokenAuthenticationEntryPoint);
+//                        .accessDeniedHandler(customBearerTokenAccessDeniedHandler));
 
         return httpSecurity.build();
     }
@@ -47,6 +52,7 @@ public class SecurityConfig {
     private RequestMatcher publicEndpoints() {
         return new OrRequestMatcher(
                 new AntPathRequestMatcher("/api/v1/auth/**")
+
         );
     }
 }

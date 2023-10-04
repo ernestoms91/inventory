@@ -54,6 +54,6 @@ public class Item {
     @NotNull
     private  boolean withdrawn ;
 
-
+    private  String image;
 
 }

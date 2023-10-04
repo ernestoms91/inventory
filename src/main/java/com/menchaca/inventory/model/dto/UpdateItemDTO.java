@@ -4,6 +4,7 @@ import com.menchaca.inventory.model.DepartmentName;
 import com.menchaca.inventory.model.Type;
 import com.menchaca.inventory.validation.NullOrNotBlank;
 import com.menchaca.inventory.validation.ValueOfEnum;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.lang.Nullable;
@@ -40,8 +41,8 @@ public class UpdateItemDTO {
     private String observation;
 
     @Nullable
-    @Pattern(regexp = "\\d+", message = "Debe introducir solo números")
-    private String price;
+    @Digits(fraction = 2, integer = 10, message = "El monto debe tener entre 2 decimales y 10 digitos enteros")
+    private BigDecimal price;
 
     @Nullable
     @Pattern(regexp = "\\d+", message = "Debe introducir solo números")
@@ -57,7 +58,7 @@ public class UpdateItemDTO {
 
     public boolean isEmpty() {
         return ( (stockNumber == null || stockNumber.isEmpty()) && (electric == null || electric.isEmpty()) && (type == null || type.isEmpty())
-                && (description == null || description.isEmpty()) && (observation == null || observation.isEmpty())&& (price == null || price.isEmpty())
+               && (description == null || description.isEmpty()) && (observation == null || observation.isEmpty())&& (price == null )
                 && (id_department == null || id_department.isEmpty()) && (broken == null || broken.isEmpty()) && (withdrawn == null || withdrawn.isEmpty()));
     }
 

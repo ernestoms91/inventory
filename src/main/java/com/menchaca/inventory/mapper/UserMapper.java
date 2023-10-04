@@ -4,6 +4,7 @@ import com.menchaca.inventory.model.BusinessOffice;
 import com.menchaca.inventory.model.User;
 import com.menchaca.inventory.model.dto.BusinessOfficeDTO;
 import com.menchaca.inventory.model.dto.UserDTO;
+import com.menchaca.inventory.model.dto.UserDetailDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
@@ -11,4 +12,6 @@ import org.mapstruct.MappingConstants;
 public interface UserMapper {
     User UserDTOToUser(UserDTO userDTO);
     UserDTO UserToUserDTO(User user);
+    User UserDetailDTOToUser(UserDetailDTO userDetailDTO);
+    UserDetailDTO UserToUserDetailDTO(User user);
 }

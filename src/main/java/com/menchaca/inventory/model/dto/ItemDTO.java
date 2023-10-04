@@ -6,6 +6,7 @@ import com.menchaca.inventory.model.Type;
 import com.menchaca.inventory.validation.ValueOfEnum;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 @Data
@@ -37,7 +38,7 @@ public class ItemDTO {
     private String observation;
 
     @NotNull(message = "El campo ¨price¨ es obligatorio")
-    @Digits(integer = 10, fraction = 2)
+    @Digits(fraction = 2, integer = 10, message = "El monto debe tener entre 2 decimales y 10 digitos enteros")
     private BigDecimal price;
 
     @NotNull(message = "El campo ¨id_department¨ es obligatorio")

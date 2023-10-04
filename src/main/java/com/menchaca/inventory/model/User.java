@@ -1,5 +1,6 @@
 package com.menchaca.inventory.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -41,14 +42,15 @@ public class User implements UserDetails {
     private String email;
 
     @NotNull(message = "La contraseña es obligatoria")
+    @JsonIgnore
     private String password;
 
     @NotNull(message = "El campo ¨role¨ es obligatorio")
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @NotNull(message = "El campo ¨disable¨ es obligatorio")
-    private boolean disable;
+    @NotNull(message = "El campo ¨enabled¨ es obligatorio")
+    private boolean enabled;
 
 
     @Override
@@ -82,7 +84,5 @@ public class User implements UserDetails {
     }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return enabled;}
 }

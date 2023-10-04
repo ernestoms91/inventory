@@ -1,5 +1,6 @@
 package com.menchaca.inventory.controller;
 
+import com.menchaca.inventory.exception.InvalidFileTypeException;
 import com.menchaca.inventory.exception.ObjectNotFoundException;
 import com.menchaca.inventory.model.BusinessOffice;
 import com.menchaca.inventory.model.Item;
@@ -15,10 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -31,7 +35,7 @@ public class ItemController {
     private IItemService itemService;
 
     @GetMapping("/find/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<?> findById(@PathVariable Long id) throws ObjectNotFoundException {
         ItemDTO itemDTO = itemService.findById(id);
         return ResponseEntity.ok(itemDTO);
@@ -55,7 +59,7 @@ public class ItemController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateBusinessOfficeDTOList(@PathVariable Long id, @RequestBody @Valid UpdateItemDTO itemDTO) throws URISyntaxException {
+    public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody @Valid UpdateItemDTO itemDTO) throws URISyntaxException {
        Item item = itemService.update(id, itemDTO);
         return  ResponseEntity.ok(HttpCreatedDTO.builder()
                 .status(HttpStatus.OK.value())
@@ -73,4 +77,23 @@ public class ItemController {
                 .content(null)
                 .build());
     }
+
+    @PostMapping("/image/upload/{id}")
+    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) throws  ObjectNotFoundException, IOException, InvalidFileTypeException {
+        String msg = itemService.uploadImage(id, file);
+        return ResponseEntity.ok(HttpCreatedDTO.builder()
+                .status(HttpStatus.OK.value())
+                .msg(msg)
+                .content(null)
+                .build());
+    }
+    @GetMapping("/image/{fileName}")
+    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws  ObjectNotFoundException, IOException {
+        byte[] imageData=itemService.downloadImageFromFileSystem(fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+    }
+
+
 }

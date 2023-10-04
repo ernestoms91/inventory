@@ -3,10 +3,7 @@ package com.menchaca.inventory.service;
 import com.menchaca.inventory.exception.ObjectNotFoundException;
 import com.menchaca.inventory.model.Item;
 import com.menchaca.inventory.model.User;
-import com.menchaca.inventory.model.dto.ItemDTO;
-import com.menchaca.inventory.model.dto.LoginDTO;
-import com.menchaca.inventory.model.dto.UpdateItemDTO;
-import com.menchaca.inventory.model.dto.UserDTO;
+import com.menchaca.inventory.model.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +11,13 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface IUserService {
-    UserDTO findById(Long id) throws ObjectNotFoundException;
+    UserDetailDTO findById(Long id) throws ObjectNotFoundException;
     Page<User> findAll(Pageable pageable);
     User save (UserDTO userDTO);
 
-    User update (Long id, UpdateItemDTO updateItemDTO);
+    User update (Long id, UpdateUserDTO updateUserDTO);
     void deleteById(Long id);
 
     Map<String, String> register(UserDTO userDTO);
-    Map<String, String> login(LoginDTO loginDTO);
+    Map<String, Object> login(LoginDTO loginDTO);
 }

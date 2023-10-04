@@ -1,11 +1,9 @@
 package com.menchaca.inventory.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.menchaca.inventory.model.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,21 +21,23 @@ public class UserDTO  {
 
     private Long id;
 
+    @NotBlank(message = "No puede estar vacío")
     @NotNull(message = "El campo nombre es obligatorio")
     @Size(min = 2, max = 30 , message ="El nombre debe tener al menos 2 letras y no puede exceder los  30 caractéres" )
     private String name;
 
+    @NotBlank(message = "No puede estar vacío")
     @NotNull(message = "El campo ya apellido es obligatorio")
     @Size(min = 2, max = 30 , message ="El apellido debe tener al menos 2 letras y no puede exceder los 30 caractéres" )
     private String lastName;
 
+    @NotBlank(message = "No puede estar vacío")
     @NotNull(message = "El username es obligatorio")
-    @Column(unique = true)
+    @Size(min = 2, max = 30, message = "El usuario debe tener al menos 4 caracteres y no puede exceder los 30")
     private String username;
 
     @NotNull(message = "El username es obligatorio")
     @Email(message = "Debe introducir un correo valido")
-    @Column(unique = true)
     private String email;
 
 
@@ -48,7 +48,7 @@ public class UserDTO  {
 //    It contains at least one special character which includes !@#$%&*()-+=^.
 //    It doesn’t contain any white space.
     @NotNull(message = "La contraseña es obligatoria")
-//    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\\\S+$).{8, 20}$", message = "Debe introducir una contraseña segura")
+    @Pattern(regexp =  "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>.]).{8,20}$", message = "Debe introducir una contraseña segura")
     private String password;
 
     @NotNull(message = "El campo ¨role¨ es obligatorio")
