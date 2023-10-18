@@ -91,7 +91,7 @@ public class ItemController {
     public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws  ObjectNotFoundException, IOException {
         byte[] imageData=itemService.downloadImageFromFileSystem(fileName);
         return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
+                .contentType(MediaType.valueOf("image/png@CrossOrigin"))
                 .body(imageData);
     }
 
