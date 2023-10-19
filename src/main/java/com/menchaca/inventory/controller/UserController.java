@@ -25,13 +25,14 @@ public class UserController {
         private IUserService userService;
 
         @GetMapping("/find/{id}")
-        @PreAuthorize("hasAuthority('USER')")
+        @PreAuthorize("hasAuthority('ADMIN')")
         public ResponseEntity<?> findById(@PathVariable Long id) throws ObjectNotFoundException {
             UserDetailDTO userDetailDTO = userService.findById(id);
             return ResponseEntity.ok(userDetailDTO);
         }
 
         @GetMapping("/all")
+        @PreAuthorize("hasAuthority('ADMIN')")
         public ResponseEntity<?> findAll(Pageable pageable) {
 
             Page<User> userPage = userService.findAll(pageable);
@@ -39,6 +40,7 @@ public class UserController {
         }
 
     @PostMapping("/new")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO) throws URISyntaxException {
 
         Map<String, String> user = userService.register(userDTO);
@@ -51,6 +53,7 @@ public class UserController {
 
 
         @PutMapping("/update/{id}")
+        @PreAuthorize("hasAuthority('ADMIN')")
         public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody @Valid UpdateUserDTO updateUserDTO) throws URISyntaxException {
             User user = userService.update(id, updateUserDTO);
             return  ResponseEntity.ok(HttpCreatedDTO.builder()
@@ -61,6 +64,7 @@ public class UserController {
 
 
         @DeleteMapping("/delete/{id}")
+        @PreAuthorize("hasAuthority('ADMIN')")
         public ResponseEntity<?> deleteById(@PathVariable Long id) {
             userService.deleteById(id);
             return ResponseEntity.ok(HttpCreatedDTO.builder()
