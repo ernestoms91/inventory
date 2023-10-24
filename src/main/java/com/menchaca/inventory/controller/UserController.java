@@ -1,10 +1,8 @@
 package com.menchaca.inventory.controller;
 
 import com.menchaca.inventory.exception.ObjectNotFoundException;
-import com.menchaca.inventory.model.Item;
 import com.menchaca.inventory.model.User;
 import com.menchaca.inventory.model.dto.*;
-import com.menchaca.inventory.service.IItemService;
 import com.menchaca.inventory.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

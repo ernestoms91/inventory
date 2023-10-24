@@ -183,7 +183,7 @@ public class UserServiceImpl implements IUserService {
             }
 
             user = userOptional.get();
-            user.setEnabled(false);
+            user.setEnabled(!user.isEnabled());
             userDAO.save(user);
 
         } catch (Exception e) {
@@ -196,6 +196,7 @@ public class UserServiceImpl implements IUserService {
         User user = save(userDTO);
         String jwtToken = jwtService.generateToken(user);
         Map<String, String> user1 = new HashMap<>();
+        user1.put("id", user.getId().toString());
         user1.put("usuario", user.getUsername());
         user1.put("nombre", user.getName());
         user1.put("correo", user.getEmail());
