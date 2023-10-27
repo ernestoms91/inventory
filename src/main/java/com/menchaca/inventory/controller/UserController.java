@@ -45,7 +45,7 @@ public class UserController {
 
         return ResponseEntity.created(new URI("api/v1/department/new")).body(HttpCreatedDTO.builder()
                 .status(HttpStatus.CREATED.value())
-                .msg("Usuario regustrado existosamente")
+                .msg("Usuario registrado exitosamente")
                 .content(user).build());
     }
 
@@ -56,7 +56,7 @@ public class UserController {
             User user = userService.update(id, updateUserDTO);
             return  ResponseEntity.ok(HttpCreatedDTO.builder()
                     .status(HttpStatus.OK.value())
-                    .msg("Item actualizado existosamente")
+                    .msg("Usuario actualizado exitosamente")
                     .content(user).build());
         }
 

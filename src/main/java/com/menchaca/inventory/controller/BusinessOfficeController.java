@@ -42,14 +42,14 @@ public class BusinessOfficeController {
     public ResponseEntity<?> saveBusinessOfficeDTOList(@RequestBody @Valid BusinessOfficeDTO businessOfficeDTO) throws URISyntaxException {
         BusinessOffice businessOffice = businessOfficeService.save(businessOfficeDTO);
         return ResponseEntity.created(new URI("api/v1/department/new")).body(HttpCreatedDTO.builder()
-                .status(HttpStatus.CREATED.value()).msg("Departamento creado existosamente").content(businessOffice).build());
+                .status(HttpStatus.CREATED.value()).msg("Departamento creado exitosamente").content(businessOffice).build());
     }
 
     @PutMapping ("/update/{id}")
     public ResponseEntity<?> updateBusinessOfficeDTOList(@PathVariable Long id, @RequestBody @Valid UpdateBusinessOfficeDTO updateBusinessOfficeDTO) throws URISyntaxException {
         BusinessOffice businessOffice = businessOfficeService.update(id, updateBusinessOfficeDTO);
         return ResponseEntity.ok(HttpCreatedDTO.builder()
-                .status(HttpStatus.OK.value()).msg("Departamento actualizado existosamente").content(businessOffice).build());
+                .status(HttpStatus.OK.value()).msg("Departamento actualizado exitosamente").content(businessOffice).build());
     }
 
 

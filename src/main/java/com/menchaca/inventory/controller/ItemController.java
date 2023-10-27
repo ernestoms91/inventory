@@ -54,7 +54,7 @@ public class ItemController {
 
         return ResponseEntity.created(new URI("api/v1/department/new")).body(HttpCreatedDTO.builder()
                 .status(HttpStatus.CREATED.value())
-                .msg("Item creado existosamente")
+                .msg("Item creado exitosamente")
                 .content(item).build());
     }
 
@@ -63,7 +63,7 @@ public class ItemController {
        Item item = itemService.update(id, itemDTO);
         return  ResponseEntity.ok(HttpCreatedDTO.builder()
                 .status(HttpStatus.OK.value())
-                .msg("Item actualizado existosamente")
+                .msg("Item actualizado exitosamente")
                 .content(item).build());
     }
 

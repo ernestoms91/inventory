@@ -27,7 +27,7 @@ public class AuthController {
 
         return ResponseEntity.created(new URI("api/v1/department/new")).body(HttpCreatedDTO.builder()
                 .status(HttpStatus.CREATED.value())
-                .msg("Usuario regustrado existosamente")
+                .msg("Usuario regustrado exitosamente")
                 .content(user).build());
     }
 
